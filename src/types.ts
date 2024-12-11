@@ -24,6 +24,10 @@ export type Massacre = {
                 ethnicity: Record<string, number>;
             };
         };
+        combatants?: {
+            "total": number,
+            "notes": string[]
+        }
     };
     demographics: {
         age_range: {

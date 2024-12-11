@@ -22,18 +22,15 @@ export default function MassacreDetails({ massacre }: Prop) {
             <p className="text-lg mb-6">{massacre.description}</p>
 
             <div className="mb-6">
-                <h3 className="text-xl font-semibold mb-2">Victims</h3>
+                <h3 className="text-xl font-semibold mb-2">Civilan Victims: {massacre.victims.total - (massacre.victims.combatants?.total ?? 0)}</h3>
                 <div className="bg-gray-700 p-4">
-                    <p className="mb-4">
-                        <span className="font-semibold">Total Victims:</span> {massacre.victims.total}
-                    </p>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                         {/* Gender */}
                         {massacre.victims.unarmed_civilians.demographics.gender &&
                             <div>
                                 <h4 className="font-bold underline mb-2">Gender</h4>
                                 <ul className="list-disc list-inside text-gray-300">
-                                    {Object.entries(massacre.victims.unarmed_civilians.demographics.gender).map(
+                                    {Object.entries(massacre.victims.unarmed_civilians.demographics.gender).filter(([_, c]) => c > 0).map(
                                         ([gender, count]) => (
                                             <li key={gender}>
                                                 {gender[0].toUpperCase() + gender.substring(1)}: {count}
@@ -47,9 +44,9 @@ export default function MassacreDetails({ massacre }: Prop) {
                         <div>
                             <h4 className="font-bold underline mb-2">Age Groups</h4>
                             <ul className="list-disc list-inside text-gray-300">
-                                <li>Minors: {massacre.victims.unarmed_civilians.demographics.age.minors}</li>
-                                <li>Adults: {massacre.victims.unarmed_civilians.demographics.age.adults}</li>
-                                <li>Over 65: {massacre.victims.unarmed_civilians.demographics.age.over_65}</li>
+                                {(massacre.victims.unarmed_civilians.demographics.age.minors ?? 0) > 0 && <li>Minors: {massacre.victims.unarmed_civilians.demographics.age.minors}</li>}
+                                {(massacre.victims.unarmed_civilians.demographics.age.adults ?? 0) > 0 && <li>Adults: {massacre.victims.unarmed_civilians.demographics.age.adults}</li>}
+                                {(massacre.victims.unarmed_civilians.demographics.age.over_65 ?? 0) > 0 && <li>Over 65: {massacre.victims.unarmed_civilians.demographics.age.over_65}</li>}
                             </ul>
                         </div>
                         {/* Ethnicity */}
@@ -68,6 +65,19 @@ export default function MassacreDetails({ massacre }: Prop) {
                     </div>
                 </div>
             </div>
+
+
+            {massacre.victims.combatants && massacre.victims.combatants.total > 0 && massacre.victims.combatants.notes.length > 0 &&
+
+                < div className="mb-6">
+                    <h3 className="text-xl font-semibold mb-2">Combatants killed: {massacre.victims.combatants.total}</h3>
+                    <ul className="list-disc list-inside text-gray-300 space-y-1">
+                        {massacre.victims.combatants.notes.map((note, idx) => (
+                            <li key={idx}>{note}</li>
+                        ))}
+                    </ul>
+                </div>
+            }
 
             <div className="mb-6">
                 <h3 className="text-xl font-semibold mb-2">Notes</h3>
@@ -99,6 +109,6 @@ export default function MassacreDetails({ massacre }: Prop) {
                     ))}
                 </ul>
             </div>
-        </div>
+        </div >
     );
 }
